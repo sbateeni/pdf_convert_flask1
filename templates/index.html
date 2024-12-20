@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>محول PDF إلى نص</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+    <header class="header">
+        <h1>محول PDF إلى نص</h1>
+    </header>
+
+    <div class="container">
+        <!-- Upload Section -->
+        <div class="card">
+            <div class="upload-area" id="dropZone">
+                <h2>قم بتحميل ملف PDF</h2>
+                <p>اسحب الملف هنا أو انقر للتحميل</p>
+                <input type="file" id="fileInput" accept=".pdf" style="display: none;">
+            </div>
+            <div id="uploadStatus"></div>
+        </div>
+
+        <!-- Settings Section -->
+        <div class="card">
+            <h2>إعدادات التحويل</h2>
+            <div class="settings-grid">
+                <!-- Language Settings -->
+                <div class="setting-item">
+                    <h3>إعدادات اللغة</h3>
+                    <label class="switch">
+                        <input type="checkbox" id="autoDetectLang" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span>كشف تلقائي للغة</span>
+                    
+                    <div id="languageSelector" style="display: none;">
+                        <select multiple id="languages">
+                            <option value="eng" selected>English - الإنجليزية</option>
+                            <option value="ara" selected>Arabic - العربية</option>
+                            <option value="fra">French - الفرنسية</option>
+                            <option value="deu">German - الألمانية</option>
+                            <option value="spa">Spanish - الإسبانية</option>
+                            <option value="ita">Italian - الإيطالية</option>
+                            <option value="tur">Turkish - التركية</option>
+                            <option value="rus">Russian - الروسية</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Page Range -->
+                <div class="setting-item">
+                    <h3>نطاق الصفحات</h3>
+                    <label class="switch">
+                        <input type="checkbox" id="processAll" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span>تحويل كل الصفحات</span>
+                    
+                    <div id="pageRangeInput" style="display: none;">
+                        <input type="text" placeholder="مثال: 1-3,5,7-9" id="pageRange">
+                    </div>
+                </div>
+
+                <!-- OCR Settings -->
+                <div class="setting-item">
+                    <h3>إعدادات OCR</h3>
+                    <label class="switch">
+                        <input type="checkbox" id="useOcr" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span>استخدام OCR</span>
+                    
+                    <label class="switch">
+                        <input type="checkbox" id="enhanceImages" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span>تحسين جودة الصور</span>
+                </div>
+
+                <!-- Text Enhancement -->
+                <div class="setting-item">
+                    <h3>تحسين النص</h3>
+                    <label class="switch">
+                        <input type="checkbox" id="correctSpelling" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span>تصحيح الإملاء</span>
+                    
+                    <label class="switch">
+                        <input type="checkbox" id="removeExtraSpaces" checked>
+                        <span class="slider"></span>
+                    </label>
+                    <span>إزالة المسافات الزائدة</span>
+                </div>
+            </div>
+
+            <button id="processButton" class="btn btn-primary">تحويل PDF إلى نص</button>
+        </div>
+
+        <!-- Results Section -->
+        <div id="resultsSection" class="card" style="display: none;">
+            <h2>النتائج</h2>
+            <div class="tab-container">
+                <div class="tabs">
+                    <button class="tab active" data-tab="text">النص</button>
+                    <button class="tab" data-tab="image">الصورة</button>
+                </div>
+
+                <div class="tab-content active" id="textContent">
+                    <textarea class="text-area" id="extractedText" readonly></textarea>
+                    <button class="btn btn-secondary" id="copyText">نسخ النص</button>
+                </div>
+
+                <div class="tab-content" id="imageContent">
+                    <img id="pageImage" class="image-preview">
+                </div>
+
+                <div class="page-navigation">
+                    <button class="btn btn-secondary" id="prevPage">الصفحة السابقة</button>
+                    <span class="page-info" id="pageInfo">صفحة 1 من 1</span>
+                    <button class="btn btn-secondary" id="nextPage">الصفحة التالية</button>
+                </div>
+            </div>
+
+            <button class="btn btn-primary" id="clearResults">مسح النتائج</button>
+        </div>
+
+        <div id="loading" class="loading">
+            <div class="loading-spinner"></div>
+            <p>جاري معالجة الملف...</p>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>
